@@ -87,6 +87,10 @@ export async function forgotPassword(_prev: AuthState, formData: FormData): Prom
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (user && user.active) {
+    await prisma.passwordResetToken.deleteMany({
+      where: { userId: user.id, usedAt: null },
+    });
+
     const token = crypto.randomUUID();
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
