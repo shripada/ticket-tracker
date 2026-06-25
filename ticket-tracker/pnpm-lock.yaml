@@ -11,6 +11,9 @@ dependencies:
   bcryptjs:
     specifier: ^2.4.3
     version: 2.4.3
+  cloudinary:
+    specifier: 2.10.0
+    version: 2.10.0
   jose:
     specifier: 6.2.3
     version: 6.2.3
@@ -2486,6 +2489,16 @@ packages:
       }
     dev: false
 
+  /cloudinary@2.10.0:
+    resolution:
+      {
+        integrity: sha512-sY09kYg7wprkndAOjZBAYqFZqwL+SxnEGcAvksOvFA+5upnFn949UjkEkHKNSwkBtW/xRDd0p6NgbSXZcxkI3w==,
+      }
+    engines: { node: '>=9' }
+    dependencies:
+      lodash: 4.18.1
+    dev: false
+
   /color-convert@2.0.1:
     resolution:
       {
@@ -4380,6 +4393,13 @@ packages:
         integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==,
       }
     dev: true
+
+  /lodash@4.18.1:
+    resolution:
+      {
+        integrity: sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==,
+      }
+    dev: false
 
   /loose-envify@1.4.0:
     resolution:
