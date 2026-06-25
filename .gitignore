@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Next.js
+ticket-tracker/.next/
+ticket-tracker/out/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Playwright
+ticket-tracker/playwright-report/
+ticket-tracker/test-results/
+
+# Prisma generated
+ticket-tracker/node_modules/.prisma/
