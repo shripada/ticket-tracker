@@ -41,6 +41,7 @@ export async function renameCategory(
   await requireAdmin();
   const id = (formData.get('id') as string) ?? '';
   const name = ((formData.get('name') as string) ?? '').trim();
+  if (!id) return { error: 'Category ID is required.' };
   if (!name) return { error: 'Name is required.' };
 
   try {
@@ -58,6 +59,7 @@ export async function renameCategory(
 export async function toggleCategory(formData: FormData): Promise<void> {
   await requireAdmin();
   const id = (formData.get('id') as string) ?? '';
+  if (!id) throw new Error('Category ID is required.');
   const active = formData.get('active') === 'true';
   await prisma.category.update({ where: { id }, data: { active } });
   revalidatePath('/admin/categories');
