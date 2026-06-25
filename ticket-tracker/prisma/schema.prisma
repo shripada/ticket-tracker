@@ -139,11 +139,12 @@ model Allowlist {
 }
 
 model Settings {
-  id             String   @id @default(cuid())
-  orgName        String
-  allowedDomains String[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                    String   @id @default(cuid())
+  orgName               String
+  allowedDomains        String[]
+  maxOpenTicketsPerUser Int      @default(5)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
 model PasswordResetToken {
