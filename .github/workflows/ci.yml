@@ -65,3 +65,5 @@ jobs:
         run: pnpm exec playwright test
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ticket_tracker
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET || 'ci-only-insecure-secret-not-used-in-prod' }}
+          APP_URL: http://localhost:3000
