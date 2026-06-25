@@ -1,18 +1,10 @@
 'use server';
 
-import { redirect } from 'next/navigation';
-import { Role } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
-import { getSession } from '@/lib/session';
+import { requireAdmin } from '@/lib/guards';
 
 export type CategoryState = { error?: string };
-
-async function requireAdmin(): Promise<void> {
-  const session = await getSession();
-  if (!session) redirect('/login');
-  if (session.role !== Role.ADMIN) redirect('/');
-}
 
 export async function createCategory(
   _prev: CategoryState,

@@ -1,16 +1,12 @@
-import { redirect } from 'next/navigation';
-import { Role } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import { getSession } from '@/lib/session';
+import { requireAdmin } from '@/lib/guards';
 import CategoryForm from './CategoryForm';
 import { CategoryRow } from './CategoryRow';
 
 export const metadata = { title: 'Categories | Ticket Tracker' };
 
 export default async function CategoriesPage() {
-  const session = await getSession();
-  if (!session) redirect('/login');
-  if (session.role !== Role.ADMIN) redirect('/');
+  await requireAdmin();
 
   const categories = await prisma.category.findMany({ orderBy: { createdAt: 'asc' } });
 

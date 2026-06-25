@@ -109,7 +109,7 @@ export async function forgotPassword(_prev: AuthState, formData: FormData): Prom
           subject: 'Reset your password',
           html: `<p>Click the link below to reset your password. It expires in 1 hour.</p><p><a href="${resetUrl}">${resetUrl}</a></p>`,
         })
-        .catch(() => undefined);
+        .catch((err) => console.error('[forgotPassword] email delivery failed:', err));
     }
   }
 
