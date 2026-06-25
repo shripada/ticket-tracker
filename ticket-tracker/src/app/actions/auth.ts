@@ -86,7 +86,7 @@ export async function forgotPassword(_prev: AuthState, formData: FormData): Prom
 
   const user = await prisma.user.findUnique({ where: { email } });
 
-  if (user) {
+  if (user && user.active) {
     const token = crypto.randomUUID();
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
@@ -129,6 +129,11 @@ export async function resetPassword(_prev: AuthState, formData: FormData): Promi
   const resetToken = await prisma.passwordResetToken.findUnique({ where: { token } });
 
   if (!resetToken || resetToken.usedAt !== null || resetToken.expiresAt < new Date()) {
+    return { error: 'This reset link is invalid or has expired.' };
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: resetToken.userId } });
+  if (!user || !user.active) {
     return { error: 'This reset link is invalid or has expired.' };
   }
 
