@@ -118,6 +118,27 @@ test.describe('Category Management', () => {
     expect(names).not.toContain('To Deactivate');
   });
 
+  // Depends on Issue 5 (ticket creation form)
+  test.skip('deactivated category is absent from the ticket-creation dropdown', async ({
+    page,
+  }) => {
+    await loginAs(page, 'user');
+    await page.goto('/tickets/new');
+    const options = page.locator('select[name="categoryId"] option');
+    const texts = await options.allTextContents();
+    expect(texts).not.toContain('To Deactivate');
+  });
+
+  // Depends on Issue 5 (ticket display)
+  test.skip('ticket created before a category was deactivated still shows the category name', async ({
+    page,
+  }) => {
+    // seed: create a ticket linked to "To Deactivate", then verify the ticket detail shows the name
+    await loginAs(page, 'admin');
+    await page.goto('/tickets'); // adjust path when Issue 5 ships
+    await expect(page.getByText('To Deactivate')).toBeVisible();
+  });
+
   // ── Cycle 5: non-admin is blocked ──────────────────────────────────────────
 
   test('agent visiting /admin/categories is redirected', async ({ page }) => {
