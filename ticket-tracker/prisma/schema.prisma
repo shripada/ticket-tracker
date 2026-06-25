@@ -49,15 +49,17 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  createdTickets  Ticket[]      @relation("TicketCreator")
-  assignedTickets Ticket[]      @relation("TicketAssignee")
-  comments        Comment[]
-  activityLogs    ActivityLog[]
+  createdTickets      Ticket[]             @relation("TicketCreator")
+  assignedTickets     Ticket[]             @relation("TicketAssignee")
+  comments            Comment[]
+  activityLogs        ActivityLog[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model Category {
   id        String   @id @default(cuid())
   name      String   @unique
+  active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -142,4 +144,14 @@ model Settings {
   allowedDomains String[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
 }

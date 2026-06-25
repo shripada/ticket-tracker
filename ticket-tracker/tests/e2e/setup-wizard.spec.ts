@@ -15,6 +15,7 @@ test.describe('Setup Wizard', () => {
     await prisma.attachment.deleteMany();
     await prisma.comment.deleteMany();
     await prisma.ticket.deleteMany();
+    await prisma.passwordResetToken.deleteMany();
     await prisma.allowlist.deleteMany();
     await prisma.settings.deleteMany();
     await prisma.category.deleteMany();
