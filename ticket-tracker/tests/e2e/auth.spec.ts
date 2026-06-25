@@ -193,4 +193,64 @@ test.describe('Authentication', () => {
       data: { passwordHash: originalHash },
     });
   });
+
+  // ── Password reset security ────────────────────────────────────────────────
+
+  test('forgot-password for deactivated account shows success but creates no token', async ({
+    page,
+  }) => {
+    await prisma.passwordResetToken.deleteMany({ where: { user: { email: INACTIVE_EMAIL } } });
+
+    await page.goto('/forgot-password');
+    await page.fill('[name="email"]', INACTIVE_EMAIL);
+    await page.click('button[type="submit"]');
+    await expect(page.locator('p[role="status"]')).toContainText(/reset link/i, {
+      timeout: 15_000,
+    });
+
+    const token = await prisma.passwordResetToken.findFirst({
+      where: { user: { email: INACTIVE_EMAIL } },
+    });
+    expect(token).toBeNull();
+  });
+
+  test('submitting forgot-password twice leaves only one valid token', async ({ page }) => {
+    await prisma.passwordResetToken.deleteMany({ where: { user: { email: ACTIVE_EMAIL } } });
+
+    for (let i = 0; i < 2; i++) {
+      await page.goto('/forgot-password');
+      await page.fill('[name="email"]', ACTIVE_EMAIL);
+      await page.click('button[type="submit"]');
+      await expect(page.locator('p[role="status"]')).toContainText(/reset link/i, {
+        timeout: 15_000,
+      });
+    }
+
+    const unusedTokens = await prisma.passwordResetToken.findMany({
+      where: { user: { email: ACTIVE_EMAIL }, usedAt: null },
+    });
+    expect(unusedTokens).toHaveLength(1);
+  });
+
+  test('reset token issued before deactivation is rejected after deactivation', async ({
+    page,
+  }) => {
+    const user = await prisma.user.findUniqueOrThrow({ where: { email: ACTIVE_EMAIL } });
+    const token = crypto.randomUUID();
+    await prisma.passwordResetToken.create({
+      data: { token, userId: user.id, expiresAt: new Date(Date.now() + 60 * 60 * 1000) },
+    });
+
+    await prisma.user.update({ where: { email: ACTIVE_EMAIL }, data: { active: false } });
+
+    try {
+      await page.goto(`/reset-password?token=${token}`);
+      await page.fill('[name="password"]', 'AnotherPass4!');
+      await page.fill('[name="passwordConfirm"]', 'AnotherPass4!');
+      await page.click('button[type="submit"]');
+      await expect(page.locator('p[role="alert"]')).toContainText(/invalid|expired/i);
+    } finally {
+      await prisma.user.update({ where: { email: ACTIVE_EMAIL }, data: { active: true } });
+    }
+  });
 });
